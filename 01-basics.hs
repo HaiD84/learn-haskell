@@ -200,3 +200,38 @@ boomBangs xs = [ if x < 10 then "Boom!" else "Bang!" | x <- xs, odd x ]
  - Prelude> [ x + y | x <- [1..3], y <- [10, 100, 1000]]
  - [11,101,1001,12,102,1002,13,103,1003]
  -}
+
+
+{-
+ - Tuples:
+ -}
+
+{-
+ - Prelude> (1, True, "Hello")
+ - (1,True,"Hello")
+ - Prelude> [(1, 2), (2, 4)]
+ - [(1,2),(2,4)]
+ -
+ - Prelude> (1, "one") == (1.0, "one")
+ - True
+ - Prelude> (1, "one") == (1, "two")
+ - False
+ -
+ - Works only for couples:
+ - Prelude> fst ("HaiD", 42)
+ - "HaiD"
+ - Prelude> snd ("HaiD", 42)
+ - 42
+ -
+ - Prelude> zip [1..5] ["one", "two", "three", "four", "five"]
+ - [(1,"one"),(2,"two"),(3,"three"),(4,"four"),(5,"five")]
+ - Prelude> zip [1..] ["only", "three", "elements"]
+ - [(1,"only"),(2,"three"),(3,"elements")]
+ -}
+
+{-
+ - Right triangle:
+ -}
+
+triples = [(a, b, c) | a <- [1..10], b <- [1..10], c <- [1..10]]
+rightTriangles = [(a, b, c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
