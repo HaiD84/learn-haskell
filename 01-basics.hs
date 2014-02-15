@@ -235,3 +235,8 @@ boomBangs xs = [ if x < 10 then "Boom!" else "Bang!" | x <- xs, odd x ]
 
 triples = [(a, b, c) | a <- [1..10], b <- [1..10], c <- [1..10]]
 rightTriangles = [(a, b, c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
+
+
+firstLetter :: String -> String
+firstLetter "" = "Oops, empty string"
+firstLetter allString@(x:xs) = "First letter of string '" ++ allString ++ "' is '" ++ [x] ++ "'"
