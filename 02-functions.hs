@@ -19,3 +19,4 @@ calcBmis :: [(Float, Float)] -> [Float]
 calcBmis xs = [bmi weight height | (weight, height) <- xs]
     where bmi weight height = weight / height^2
 
+calcBmis' xs = [bmi | (weight, height) <- xs, let bmi = weight / height^2]
