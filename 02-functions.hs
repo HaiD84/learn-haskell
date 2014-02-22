@@ -20,3 +20,30 @@ calcBmis xs = [bmi weight height | (weight, height) <- xs]
     where bmi weight height = weight / height^2
 
 calcBmis' xs = [bmi | (weight, height) <- xs, let bmi = weight / height^2]
+
+
+{- this functions are equal: -}
+head' :: [a] -> a
+head' [] = error "no head for empty list"
+head' (x:_) = x
+
+head'' :: [a] -> a
+head'' xs = case xs of
+    [] -> error "no head for empty list"
+    (x:_) -> x
+
+
+describeList :: [a] -> String
+describeList x = "list " ++
+    case x of
+        [] -> "empty"
+        [a] -> "has one element"
+        as -> "has many elements"
+
+{- or -}
+describeList' :: [a] -> String
+describeList' x = "list " ++ what x
+    where
+        what [] = "empty"
+        what [a] = "has one element"
+        what as = "has many elements"
