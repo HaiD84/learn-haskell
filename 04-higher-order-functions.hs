@@ -56,3 +56,25 @@ filter' p (x:xs)
 *Main> let notNull x = not (null x) in filter' notNull [[], [1], [1..6], []]
 [[1],[1,2,3,4,5,6]]
 -}
+
+
+{-
+Prelude> sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
+166650
+OR:
+Prelude> sum (takeWhile (<10000) [x | x <- [n^2 | n <- [1..]], odd x])
+166650
+-}
+
+
+{- Collatz (Syracuse) sequence -}
+collatz :: Integer -> [Integer]
+collatz 1 = [1]
+collatz x
+    | even x = x : collatz (x `div` 2)
+    | odd x = x : collatz (3*x + 1)
+
+{- how many Collatz sequences longer than 15 are between 1..100? -}
+numLongChains :: Int
+numLongChains = length (filter isLonger (map collatz [1..100]))
+    where isLonger xs = length xs > 15
