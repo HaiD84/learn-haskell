@@ -78,3 +78,28 @@ collatz x
 numLongChains :: Int
 numLongChains = length (filter isLonger (map collatz [1..100]))
     where isLonger xs = length xs > 15
+
+{- or with lambda function: -}
+numLongChains' = length (filter (\xs -> length xs > 15) (map collatz [1..100]))
+
+
+{- Lambdas without brackets goes to the end of the line.
+ - Next two functions are equal.
+ - (It is because all functions in Haskell are currying) -}
+addThree :: Int -> Int -> Int -> Int
+addThree x y z = x + y + z
+
+addThree' :: Int -> Int -> Int -> Int
+addThree' = \x -> \y -> \z -> x + y + z
+
+{- Does "flip" function reads better that way?
+ - That record shows that mostly flip is used to create new functions. -}
+flip' :: (a -> b -> c) -> b -> a -> c
+flip' f = \x y -> f y x
+
+{-
+*Main> zipWith (flip (++)) ["love you", "love me"] ["I ", "you "]
+["I love you","you love me"]
+*Main> map (flip subtract 20) [1..4]
+[19,18,17,16]
+-}
