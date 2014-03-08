@@ -103,3 +103,45 @@ flip' f = \x y -> f y x
 *Main> map (flip subtract 20) [1..4]
 [19,18,17,16]
 -}
+
+
+{- left fold: -}
+sum' :: (Num a) => [a] -> a
+sum' xs = foldl (\acc x -> acc + x) 0 xs
+
+{- or knowing that functions are currying: -}
+sum'' :: (Num a) => [a] -> a
+sum'' = foldl (+) 0
+
+{- right fold: -}
+map'' :: (a -> b) -> [a] -> [b]
+map'' f xs = foldr (\x acc -> f x : acc) [] xs
+
+
+{- exercises. folds can be used if you need to calculate something in one pass through the list -}
+drop' :: Int -> [a] -> [a]
+drop' n xs = foldr (\x acc -> if length xs - length acc > n then x : acc else acc) [] xs
+
+dropWhile' :: (a -> Bool) -> [a] -> [a]
+dropWhile' f xs = foldl (\acc x -> if f x && length acc == 0 then [] else acc ++ [x]) [] xs
+
+
+{- foldl1, foldr1: takes first element of a list as an initial value -}
+maximum' :: (Ord a) => [a] -> a
+maximum' = foldl1 max
+
+reverse' :: [a] -> [a]
+reverse' xs = foldl (\acc x -> x : acc) [] xs
+
+filter'' :: (a -> Bool) -> [a] -> [a]
+filter'' f xs = foldr (\x acc -> if f x then x : acc else acc) [] xs
+
+last' :: [a] -> a
+last' xs = foldl1 (\_ x -> x) xs
+{- same: -}
+{-last' xs = foldr1 (\_ x -> x) xs-}
+
+
+{- how many natural numbers do we need so sum of their sqrts' is above 1000? -}
+sqrtSums :: Int
+sqrtSums = length (takeWhile (<1000) (scanl1 (+) (map sqrt [1..])) ) + 1
