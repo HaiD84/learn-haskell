@@ -145,3 +145,34 @@ last' xs = foldl1 (\_ x -> x) xs
 {- how many natural numbers do we need so sum of their sqrts' is above 1000? -}
 sqrtSums :: Int
 sqrtSums = length (takeWhile (<1000) (scanl1 (+) (map sqrt [1..])) ) + 1
+
+
+{- function application: -}
+sqrtSums' = length (takeWhile (<1000) $ scanl1 (+) $ map sqrt [1..]) + 1
+{-
+*Main> sum $ filter (>10) $ map (*2) [1..10]
+80
+*Main> map ($3) [(+2), (10*), (^2), sqrt]
+[5.0,30.0,9.0,1.7320508075688772]
+-}
+
+{- composition: -}
+{-
+*Main> map (\x -> negate (abs x)) [6, -3, -1, 4]
+[-6,-3,-1,-4]
+
+Same with function composition:
+*Main> map (negate . abs) [6, -3, -1, 4]
+[-6,-3,-1,-4]
+
+*Main> sum (replicate 5 (max 6.7 8.9))
+Can be written like:
+*Main> (sum . replicate 5) (max 6.7 8.9)
+or:
+*Main> sum . replicate 5 $ max 6.7 8.9
+
+Previous task in this chapter:
+*Main> sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
+can be rewritten like:
+*Main> sum . takeWhile (<10000) . filter odd $ map (^2) [1..]
+-}
