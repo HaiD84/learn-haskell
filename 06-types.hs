@@ -1,57 +1,112 @@
-module Shapes (
-    Point(..),
-    Shape(..),
-    area,
-    nudge,
-    baseCircle,
-    baseRect
-) where
+import qualified Data.Map as Map
 
-data Shape' = Circle' Float Float Float | Rectangle' Float Float Float Float
-    deriving (Show)
 
-area' :: Shape' -> Float
-area' (Circle' _ _ radius) = pi * (radius ^ 2)
-area' (Rectangle' x1 y1 x2 y2) = (abs $ x2 - x1) * (abs $ y2 - y1)
+data Person = Person {
+    firstName :: String,
+    lastName :: String,
+    age :: Int
+} deriving (Show, Eq, Read)
+
 {-
- - *Main> area $ Circle' 1 1 10
- - 314.15927
- - *Main> area $ Rectangle' 0 0 10 10
- - 100.0
+ - *Main> :t Person
+ - Person :: String -> String -> Int -> Person
+ - *Main> :t firstName
+ - firstName :: Person -> String
  -
- - Data constructor are also functions,
- - so we can do all function tricks:
- - *Main> map (Circle' 0 0) [1..3]
- - [Circle' 0.0 0.0 1.0,Circle' 0.0 0.0 2.0,Circle' 0.0 0.0 3.0]
+ - *Main> let guy = Person { firstName="Foo", lastName="Bar", age=1 }
+ - *Main> guy
+ - Person {firstName = "Foo", lastName = "Bar", age = 1 }
+ - *Main> lastName guy
+ - "Bar"
  -}
 
 
-data Point = Point Float Float deriving (Show)
-data Shape = Circle Point Float | Rectangle Point Point deriving (Show)
+data Vector a = Vector a a a deriving (Show)
 
-area :: Shape -> Float
-area (Circle _ radius) = pi * (radius ^ 2)
-area (Rectangle (Point x1 y1) (Point x2 y2)) = (abs $ x2 - x1) * (abs $ y2 - y1)
+vplus :: (Num a) => Vector a -> Vector a -> Vector a
+(Vector x y z) `vplus` (Vector k l m) = Vector (x + k) (y + l) (z + m)
+
+scalarProd :: (Num a) => Vector a -> Vector a -> a
+(Vector x y z) `scalarProd` (Vector k l m) = x * k + y * l + z * m
+
+vmult :: (Num a) => Vector a -> a -> Vector a
+(Vector x y z) `vmult` m = Vector (x * m) (y * m) (z * m)
+
+
+
+mikeD = Person { firstName = "Michael", lastName = "Diamond", age = 43 }
 {-
- - *Main> area $ Rectangle (Point 0 0) (Point 100 100)
- - 10000.0
- - *Main> area (Circle (Point 10 1) 20)
- - 1256.6371
+ - *Main> mikeD == mikeD
+ - True
+ - *Main> Person { firstName = "Michael", lastName = "Diamond", age = 43 } == mikeD
+ - True
+ -}
+mysteryDude = "Person { firstName = \"Bruce\"" ++
+    ", lastName = \"Wayne\"" ++
+    ", age = 40 }"
+{-
+ - Tell Haskell what type to read:
+ - *Main> read mysteryDude :: Person
+ - Person {firstName = "Bruce", lastName = "Wayne", age = 40}
+ -
+ - Or Haskell can guess it by further usage:
+ - *Main> read mysteryDude  == mikeD
+ - False
  -}
 
-{- move shapes -}
-nudge :: Shape -> Float -> Float -> Shape
-nudge (Circle (Point x y) radius) dx dy = Circle (Point (x + dx) (y + dy)) radius
-nudge (Rectangle (Point x1 y1) (Point x2 y2)) dx dy = Rectangle (Point (x1 + dx) (y1 + dy)) (Point (x2 + dx) (y2 + dy)) 
 
-{- create shapes in (0, 0) point -}
-baseCircle :: Float -> Shape
-baseCircle radius = Circle (Point 0 0) radius
-
-baseRect :: Float -> Float -> Shape
-baseRect width height = Rectangle (Point 0 0) (Point width height)
+data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
+    deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 {-
- - *Main> nudge (baseRect 20 10) 4 1
- - Rectangle (Point 4.0 1.0) (Point 24.0 11.0)
+ - Eq and Ord classes:
+ - *Main> Monday == Monday
+ - True
+ - *Main> Saturday > Friday
+ - True
+ -
+ - Bounded class:
+ - *Main> minBound :: Day
+ - Monday
+ - *Main> maxBound :: Day
+ - Sunday
+ -
+ - Enum class:
+ - *Main> succ Tuesday
+ - Wednesday
+ - *Main> pred Saturday
+ - Friday
+ - *Main> [Monday .. Friday]
+ - [Monday,Tuesday,Wednesday,Thursday,Friday]
+ - *Main> [minBound .. maxBound] :: [Day]
+ - [Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday]
+ -}
+
+
+data LockerState = Taken | Free deriving (Show, Eq)
+type Code = String
+type LockerMap = Map.Map Int (LockerState, Code)
+
+lockerLookup :: Int -> LockerMap -> Either String Code
+lockerLookup lockerNumber map =
+    case Map.lookup lockerNumber map of
+    Nothing -> Left $ "Locker #" ++ show lockerNumber ++ " is not exists"
+    Just (state, code) ->
+        if state /= Taken
+            then Right code
+            else Left $ "Locker #" ++ show lockerNumber ++ " is occupied"
+
+lockers :: LockerMap
+lockers = Map.fromList
+    [ (100, (Taken, "ZE06I"))
+    , (101, (Free, "BY57R"))
+    , (103, (Taken, "NA81D"))
+    ]
+{-
+ - *Main> lockerLookup 101 lockers
+ - Right "BY57R"
+ - *Main> lockerLookup 103 lockers
+ - Left "Locker #103 is occupied"
+ - *Main> lockerLookup 104 lockers
+ - Left "Locker #104 is not exists"
  -}
