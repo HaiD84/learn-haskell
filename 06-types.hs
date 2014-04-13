@@ -110,3 +110,55 @@ lockers = Map.fromList
  - *Main> lockerLookup 104 lockers
  - Left "Locker #104 is not exists"
  -}
+
+
+{- binary tree -}
+data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Show)
+
+singleTree :: (Ord a) => a -> Tree a
+singleTree x = Node x EmptyTree EmptyTree
+
+treeInsert :: (Ord a) => a -> Tree a -> Tree a
+treeInsert x EmptyTree = singleTree x
+treeInsert x (Node a left right)
+    | x == a = Node x left right
+    | x < a = Node a (treeInsert x left) right
+    | x > a = Node a left (treeInsert x right)
+
+treeElem :: (Ord a) => a -> Tree a -> Bool
+treeElem x EmptyTree = False
+treeElem x (Node a left right)
+    | x == a = True
+    | x < a = treeElem x left
+    | x > a = treeElem x right
+{-
+ - *Main> let t = foldr treeInsert EmptyTree  [3, 1, 8, 4, 7, 5]
+ - *Main> t
+ - Node 5 (Node 4 (Node 1 EmptyTree (Node 3 EmptyTree EmptyTree)) EmptyTree) (Node 7 EmptyTree (Node 8 EmptyTree EmptyTree))
+ -
+ - *Main> treeElem 6 t
+ - False
+ - *Main> treeElem 1 t
+ - True
+ -}
+
+
+{- manual create class instances: -}
+data TrafficLight = Red | Yellow | Green
+
+instance Eq TrafficLight where
+    Red == Red = True
+    Yellow == Yellow = True
+    Green == Green = True
+    _ == _ = False
+
+instance Show TrafficLight where
+    show Red = "Red light"
+    show Yellow = "Yellow light"
+    show Green = "Green light"
+{-
+ - *Main> Green `elem` [Red, Yellow, Green]
+ - True
+ - *Main> [Yellow, Green]
+ - [Yellow light,Green light]
+ -}
