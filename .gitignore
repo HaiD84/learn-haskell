@@ -8,3 +8,5 @@ cabal-dev
 hello
 reverse
 colors
+palindromes
+readfile
