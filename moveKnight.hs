@@ -18,3 +18,9 @@ in3Moves start = return start >>= moveKnight >>= moveKnight >>= moveKnight
 
 canReachIn3Moves :: KnightPos -> KnightPos -> Bool
 canReachIn3Moves start end = end `elem` in3Moves start
+
+inMany :: Int -> KnightPos -> [KnightPos]
+inMany x start = return start >>= foldr (<=<) return (replicate x moveKnight)
+
+canReachIn :: Int -> KnightPos -> KnightPos -> Bool
+canReachIn x start end = end `elem` inMany x start
